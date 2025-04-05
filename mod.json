@@ -1,0 +1,11 @@
+{
+    "modname": "CTN Mod Dev Utils",
+    "moddesc": "Console-based utils for developing mods",
+    "author": "CTN",
+    "modbuild": 1.0,
+    "gamemajor": 5,
+    "gameminor": 4,
+    "gamepatch_min": 1,
+    "gamepatch_max": 999,
+    "priority": 10000000
+}
