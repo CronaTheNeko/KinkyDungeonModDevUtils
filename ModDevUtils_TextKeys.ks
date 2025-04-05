@@ -67,4 +67,24 @@ window.MDUGetModFiles = function(known_files) {
   // Return found files
   return MDUModFiles
 }
+// Returns all mod files that should be put in fileorder in mod.json
+window.MDUGetFileOrderFiles = function(known_files) {
+  if (known_files == undefined)
+    known_files = []
+  window.MDUAllModFiles = []
+  function addfile(file) {
+    if (file == "mod.json") // KD mod mod.json
+      return false
+    if (file.endsWith(".md")) // Markdown files
+      return false
+    if (file == "ModDevUtils_TextKeys.ks") // This script
+      return false
+    return true
+  }
+  for (var file of KDAllModFiles) {
+    if (addfile(file.filename) && !known_files.includes(file.filename)) {
+      MDUAllModFiles.push(file.filename)
+    }
+  }
+}
 // END ModFiles

@@ -5,6 +5,7 @@ What's currently included?
 - AddModel function override
 - MDUGenerateTextKeysFromModels function
 - MDUGetModFiles function
+- MDUGetFileOrderFiles function
 
 ## AddModel Function Override
 This function overrides the vanilla `AddModel` so that all models added by mods will be seen and recorded by this function before they are added to the game via the vanilla AddModel function.
@@ -37,7 +38,7 @@ Usage: With no parameters, this function will return all mod assets. If you need
 
 Effect: Returns an array of all asset files found loaded by mods. This array is also save in `MDUModFiles` if you need to retrieve it later.
 
-Note: This function does NOT return `.js` or `.ks` files, as they are not listed in `KDModFiles`, and as such this function's return is not fully ready for use in mod.json. There will likely be another function to iterate `KDAllModFiles`.
+Note: This function does NOT return `.js` or `.ks` files, as they are not listed in `KDModFiles`, and as such this function's return is not fully ready for use in mod.json. See [MDUGetFileOrderFiles](#mdugetfileorderfiles) for making a `fileorder` array for mod.json.
 
 ### How to use MDUGetModFiles return value for asset loading?
 As an example of how to utilize this return value, you can use the following:
@@ -52,3 +53,13 @@ for (var file of assets) {
 }
 ```
 Paste in the array from `MDUGetModFiles` into `assets` and this code will attempt to preload your assets while not risking crashing the game if anything goes wrong with PIXI
+
+## MDUGetFileOrderFiles
+This function returns all mod files that should be placed in a `fileorder` array for your mod's `mod.json`. Unlike `MDUGetModFiles`, this function includes `.js` and `.ks` files.
+
+Usage: With no parameters, this function will return all mod files relevant to a `fileorder` array. If you need to update your file list, you can pass an array of known file paths and this function will return the new ones.
+
+Effect: Returns an array of all mod files to be added to the `fileorder` array in your mod.json file. This array is also saved in `MDUAllModFiles` if you need to retrieve it later.
+
+### How to use MDUGetFileOrderFiles return value?
+The array returned includes all relevant mod files in the order they were loaded by the game. If this ordering works fine, there's technically no need to define `fileorder` in your mod.json. However, if you need to change this order, simply copy out the array returned, change the order to how you like/need it to be, and save that array in the `fileorder` property of your mod.json
