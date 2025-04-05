@@ -86,5 +86,6 @@ window.MDUGetFileOrderFiles = function(known_files) {
       MDUAllModFiles.push(file.filename)
     }
   }
+  return MDUAllModFiles
 }
 // END ModFiles
