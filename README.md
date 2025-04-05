@@ -4,6 +4,7 @@ A set of utility functions to help you develop mods. Currently fairly small, but
 What's currently included?
 - AddModel function override
 - MDUGenerateTextKeysFromModels function
+- MDUGetModFiles function
 
 ## AddModel Function Override
 This function overrides the vanilla `AddModel` so that all models added by mods will be seen and recorded by this function before they are added to the game via the vanilla AddModel function.
@@ -28,3 +29,26 @@ for (var key in textKeys) {
 }
 ```
 Paste in the object from `MDUGenerateTextKeysFromModels` into `textKeys` and edit the value for each of the keys in that object, and you'll be good to go on model and layer names.
+
+## MDUGetModFiles
+This function returns all mod asset files, useful for preloading lots of assets or defining a mod.json `fileorder` array.
+
+Usage: With no parameters, this function will return all mod assets. If you need to update your asset list, you can pass an array of known asset paths and this function will return the new ones.
+
+Effect: Returns an array of all asset files found loaded by mods. This array is also save in `MDUModFiles` if you need to retrieve it later.
+
+Note: This function does NOT return `.js` or `.ks` files, as they are not listed in `KDModFiles`, and as such this function's return is not fully ready for use in mod.json. There will likely be another function to iterate `KDAllModFiles`.
+
+### How to use MDUGetModFiles return value for asset loading?
+As an example of how to utilize this return value, you can use the following:
+```
+const assets = [ ... ]
+for (var file of assets) {
+  try {
+    PIXI.Texture.fromURL(KDModFiles[file])
+  } catch (error) {
+    console.error("Failed to load asset " + file + " !", error)
+  }
+}
+```
+Paste in the array from `MDUGetModFiles` into `assets` and this code will attempt to preload your assets while not risking crashing the game if anything goes wrong with PIXI

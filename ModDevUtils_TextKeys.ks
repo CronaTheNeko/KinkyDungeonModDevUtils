@@ -38,3 +38,33 @@ window.MDUGenerateTextKeysFromModels = function(known_keys) {
   return MDUTextKeys
 }
 // END Model and Layer text keys
+
+// BEGIN ModFiles
+// Returns a list of assets loaded by mods
+// NOTE: This function does NOT return .js or .ks files in the array
+window.MDUGetModFiles = function(known_files) {
+  // Make sure known_files isn't undefined
+  if (known_files == undefined)
+    known_files = []
+  // Reset ModFiles
+  window.MDUModFiles = []
+  // Helper function to easily add file exclusions
+  function addfile(file) {
+    if (file.startsWith("http"))
+      return false
+    if (file.startsWith("Game"))
+      return false
+    if (file.includes("mod.json"))
+      return false
+    return true
+  }
+  // Loop through each mod file and decide whether or not to add it
+  for (var file in KDModFiles) {
+    if (addfile(file) && !known_files.includes(file)) {
+      MDUModFiles.push(file)
+    }
+  }
+  // Return found files
+  return MDUModFiles
+}
+// END ModFiles
