@@ -15,4 +15,4 @@ cd $(dirname $0)
 # Remove old archives if they exist
 [ -e "${filename}" ] && rm "${filename}"
 # Zip full version of mod
-zip -qr "${filename}" *.ks mod.json
+zip -qr "${filename}" * -x "*.sh"
