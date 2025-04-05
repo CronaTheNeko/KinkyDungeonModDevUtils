@@ -68,6 +68,8 @@ window.MDUGetModFiles = function(known_files) {
       return false
     if (file.includes("mod.json"))
       return false
+    if (file.endsWith("/"))
+      return false
     return true
   }
   // Loop through each mod file and decide whether or not to add it
@@ -103,6 +105,8 @@ window.MDUGetFileOrderFiles = function(known_files) {
     if (file == "mod.json") // KD mod mod.json
       return false
     if (file.endsWith(".md")) // Markdown files
+      return false
+    if (file.endsWith("/")) // Directory
       return false
     if (file == "ModDevUtils_TextKeys.ks") // This script
       return false
