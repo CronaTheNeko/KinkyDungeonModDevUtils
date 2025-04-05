@@ -34,6 +34,18 @@ window.MDUGenerateTextKeysFromModels = function(known_keys) {
         MDUTextKeys[layerKey(key, layer)] = "BOGUS"
     }
   }
+  // Info Modal
+  let keysStr = "{\n"
+  for (var key in MDUTextKeys) {
+    keysStr += "  \"" + key + "\": \"" + MDUTextKeys[key] + "\",\n"
+  }
+  keysStr += "}"
+  const modalStr = `// Make sure you change the placeholder value for all the following text keys
+const textKeys = ${keysStr}
+for (var key in textKeys) {
+  addTextKey(key, textKeys[key])
+}`
+  MDUShowOutputModal(modalStr, [ "Here's some generated code for adding your outfit text keys to the game. Make sure you change the placeholder value to something meaningful." ])
   // Return output storage to user for easier use
   return MDUTextKeys
 }
@@ -64,6 +76,21 @@ window.MDUGetModFiles = function(known_files) {
       MDUModFiles.push(file)
     }
   }
+  // Info Modal
+  let filesStr = "[\n"
+  for (var file of MDUModFiles) {
+    filesStr += "  \"" + file + "\",\n"
+  }
+  filesStr += "]"
+  const modalStr = `const assets = ${filesStr}
+for (var file of assets) {
+  try {
+    PIXI.Texture.fromURL(KDModFiles[file])
+  } catch (error) {
+    console.error("Failed to load asset " + file + " !", error)
+  }
+}`
+  MDUShowOutputModal(modalStr, [ "Here's some generated code for preloading your textures. Save this into a script and it *should* preload your textures, assuming your file order is such that the texture files are loaded before your scripts execute." ])
   // Return found files
   return MDUModFiles
 }
@@ -86,6 +113,149 @@ window.MDUGetFileOrderFiles = function(known_files) {
       MDUAllModFiles.push(file.filename)
     }
   }
+  // Info Modal
+  let filesStr = "[\n"
+  for (var file of MDUAllModFiles) {
+    filesStr += "    \"" + file + "\",\n"
+  }
+  filesStr += "  ],"
+  const modalStr = `"fileorder": ${filesStr}`
+  MDUShowOutputModal(modalStr, [ "Here's some generated code to add to your mod.json. The order of this \"fileorder\" is the order that the game loaded them in and you may need to reorder them to get everything working properly." ])
+  //
   return MDUAllModFiles
 }
 // END ModFiles
+
+// BEGIN Modal Dialogue for displaying usable code from helpers
+// Based on the vanilla crash handler buttons (KinkyDungeonErrorModalButton)
+window.MDUModalButton = function(text) {
+  const button = document.createElement("button");
+  button.textContent = text;
+  Object.assign(button.style, {
+    fontSize: "1.25em",
+    padding: "0.5em 1em",
+    backgroundColor: KDButtonColor,
+    border: `2px solid #ff66ff`, //${KDBorderColor}`,
+    color: KDBaseWhite,
+    cursor: "pointer",
+  });
+  return button;
+}
+// Based on the vanilla crash handler modal (KinkyDungeonShowCrashReportModal)
+window.MDUShowOutputModal = function(report, desc) {
+  if (desc == undefined)
+    desc = [ "Here's the example code for the info gathered. ", "I have tried to make this example code usable as is, but it may need some tweaking or values set in order to work as expected." ]
+  const id = "mod-dev-utils-modal"; // "kinky-dungeon-crash-report";
+
+  if (document.querySelector(`#${id}`)) {
+    return;
+  }
+
+  const backdrop = document.createElement("div");
+  backdrop.id = id;
+  Object.assign(backdrop.style, {
+    position: "fixed",
+    inset: 0,
+    backgroundColor: "#000000a0",
+    fontFamily: "'Arial', sans-serif",
+    fontSize: "1.8vmin",
+    lineHeight: 1.6,
+  });
+
+  const modal = document.createElement("div");
+  Object.assign(modal.style, {
+    position: "absolute",
+    display: "flex",
+    flexFlow: "column nowrap",
+    width: "90vw",
+    maxWidth: "1440px",
+    maxHeight: "90vh",
+    overflow: "hidden",
+    backgroundColor: "#282828",
+    color: "#fafafa",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    padding: "1rem",
+    borderRadius: "2px",
+    boxShadow: "1px 1px 40px -8px #ffffff80",
+  });
+  backdrop.appendChild(modal);
+
+  const heading = document.createElement("h1");
+  Object.assign(heading.style, {
+    display: "flex",
+    flexFlow: "row nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+    textAlign: "center",
+  });
+  heading.appendChild(KinkyDungeonErrorImage("WolfgirlPet"));
+  heading.appendChild(KinkyDungeonErrorImage("Wolfgirl"));
+  heading.appendChild(KinkyDungeonErrorImage("WolfgirlPet"));
+  heading.appendChild(document.createTextNode("Mod Dev Utils Info"));
+  heading.appendChild(KinkyDungeonErrorImage("WolfgirlPet"));
+  heading.appendChild(KinkyDungeonErrorImage("Wolfgirl"));
+  heading.appendChild(KinkyDungeonErrorImage("WolfgirlPet"));
+  modal.appendChild(heading);
+
+  const hr = document.createElement("hr");
+  Object.assign(hr.style, {
+    border: `1px solid #ff66ff`, //${KDBorderColor}`,
+    margin: "0 0 1.5em",
+  });
+  modal.appendChild(hr);
+
+  // modal.appendChild(KinkyDungeonErrorPreamble([
+  //   "Here's the example code for the info gathered. ",
+  //   "I have tried to make this example code usable as is, but it may need some tweaking or values set in order to work as expected.",
+  // ]));
+  modal.appendChild(KinkyDungeonErrorPreamble(desc))
+  modal.appendChild(KinkyDungeonErrorPreamble([
+    "Below is hopefully working code.",
+  ]));
+
+  const pre = document.createElement("pre");
+  Object.assign(pre.style, {
+    flex: 1,
+    backgroundColor: "#1a1a1a",
+    border: "1px solid #ffffff40",
+    fontSize: "1.1em",
+    padding: "1em",
+    userSelect: "all",
+    overflowWrap: "anywhere",
+    overflowX: "hidden",
+    overflowY: "auto",
+    color: "#ffbbff", //KDBorderColor,
+  });
+  pre.textContent = `${report}`;
+  modal.appendChild(pre);
+
+  const buttons = document.createElement("div");
+  Object.assign(buttons.style, {
+    display: "flex",
+    flexFlow: "row wrap",
+    justifyContent: "flex-end",
+    gap: "1em",
+  });
+  modal.appendChild(buttons);
+
+  const copyButton = MDUModalButton("Copy to clipboard");
+  copyButton.addEventListener("click", () => {
+    KinkyDungeonErrorCopy(report, pre)
+      .then(copied => {
+        copyButton.textContent = copied ? "Awoo!" : "Failed";
+      })
+      .catch(() => void 0);
+  });
+  buttons.appendChild(copyButton);
+
+  const closeButton = MDUModalButton("Close");
+  closeButton.addEventListener("click", () => {
+    backdrop.remove();
+  });
+  buttons.appendChild(closeButton);
+
+  document.body.appendChild(backdrop);
+}
+// END Modal Dialogue
