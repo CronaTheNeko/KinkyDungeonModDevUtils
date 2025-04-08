@@ -18,6 +18,15 @@ window.MDUGenerateTextKeysFromModels = function(known_keys) {
     known_keys = {}
   // Reset our text key output storage
   window.MDUTextKeys = {}
+
+  // Check for new wardrobe categories
+  let new_cats = KDWardrobeCategories.filter((v) => {
+    const key = "cat_" + v;
+    if (TextGet(key) == key)
+      return true
+  })
+  new_cats.forEach((v) => { MDUTextKeys["cat_" + v] = v; })
+
   // Helper function to construct layer names
   function layerKey(model, layer) {
     return "m_" + model + "_l_" + layer
@@ -26,12 +35,12 @@ window.MDUGenerateTextKeysFromModels = function(known_keys) {
   for (var key in window.MDUModels) {
     // If the base model name isn't in known_keys, add it to output storage
     if (!known_keys.hasOwnProperty("m_" + key))
-      MDUTextKeys["m_" + key] = "BOGUS"
+      MDUTextKeys["m_" + key] = key
     // Loop all of the current model's layers
     for (var layer in window.MDUModels[key].Layers) {
       // If this layer's name isn't in known_keys, add it to output storage
       if (!known_keys.hasOwnProperty(layerKey(key, layer)))
-        MDUTextKeys[layerKey(key, layer)] = "BOGUS"
+        MDUTextKeys[layerKey(key, layer)] = layer
     }
   }
   // Info Modal
@@ -40,12 +49,12 @@ window.MDUGenerateTextKeysFromModels = function(known_keys) {
     keysStr += "  \"" + key + "\": \"" + MDUTextKeys[key] + "\",\n"
   }
   keysStr += "}"
-  const modalStr = `// Make sure you change the placeholder value for all the following text keys
+  const modalStr = `// You probably want to change the value for each of these keys
 const textKeys = ${keysStr}
 for (var key in textKeys) {
   addTextKey(key, textKeys[key])
 }`
-  MDUShowOutputModal(modalStr, [ "Here's some generated code for adding your outfit text keys to the game. Make sure you change the placeholder value to something meaningful." ])
+  MDUShowOutputModal(modalStr, [ "Here's some generated code for adding your outfit text keys to the game. You likely want to change the value for each generated key." ])
   // Return output storage to user for easier use
   return MDUTextKeys
 }

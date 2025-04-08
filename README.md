@@ -15,7 +15,7 @@ Usage: Exactly the same as the vanilla `AddModel`, including the optional second
 Effect: Stores each model given into `MDUModels` for use by `MDUGenerateTextKeysFromModels`, then passes the model to the original `AddModel` function
 
 ## MDUGenerateTextKeysFromModels
-This function goes through all models added by mods and pieces together the text keys required for adding names to those models and their layers.
+This function goes through all models added by mods and pieces together the text keys required for adding names to those models and their layers. Also checks for new wardrobe categories and returns a placeholder key for those as well.
 
 Usage: With no parameters, this function will return all generated text keys. If you need to update your text keys, you can pass a dictionary object containing all your known text keys and this function will return the new ones.
 
