@@ -120,6 +120,8 @@ window.MDUGetFileOrderFiles = function(known_files) {
       return false
     if (file == "ModDevUtils_TextKeys.ks") // This script
       return false
+    if (file.startsWith("ModDevUtils_")) // This mod's files
+      return false
     return true
   }
   for (var file of KDAllModFiles) {
