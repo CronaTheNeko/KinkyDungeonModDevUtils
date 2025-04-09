@@ -52,7 +52,8 @@ window.MDUGenerateTextKeysFromModels = function(known_keys) {
   const modalStr = `// You probably want to change the value for each of these keys
 const textKeys = ${keysStr}
 for (var key in textKeys) {
-  addTextKey(key, textKeys[key])
+  if (TextGet(key) == key)
+    addTextKey(key, textKeys[key])
 }`
   MDUShowOutputModal(modalStr, [ "Here's some generated code for adding your outfit text keys to the game. You likely want to change the value for each generated key." ])
   // Return output storage to user for easier use
