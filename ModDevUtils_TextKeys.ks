@@ -129,6 +129,16 @@ window.MDUGetFileOrderFiles = function(known_files) {
       MDUAllModFiles.push(file.filename)
     }
   }
+  MDUAllModFiles.sort((a, b) => {
+    var ar = a.endsWith(".ks") || a.endsWith(".js")
+    var br = b.endsWith(".ks") || b.endsWith(".js")
+    if (ar && br)
+      return 0
+    if (ar)
+      return 1
+    if (br)
+      return -1
+  })
   // Info Modal
   let filesStr = "[\n"
   for (var file of MDUAllModFiles) {
