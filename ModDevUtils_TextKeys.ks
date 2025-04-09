@@ -146,7 +146,7 @@ window.MDUGetFileOrderFiles = function(known_files) {
   }
   filesStr += "  ],"
   const modalStr = `"fileorder": ${filesStr}`
-  MDUShowOutputModal(modalStr, [ "Here's some generated code to add to your mod.json. The order of this \"fileorder\" is the order that the game loaded them in and you may need to reorder them to get everything working properly." ])
+  MDUShowOutputModal(modalStr, [ "Here's some generated code to add to your mod.json. The order of this \"fileorder\" is mostly the order that the game loaded them in. All \"*.js\" and \"*.ks\" files have been moved to the end, but kept in the order the game loaded them in relative to each other. You may need to reorder them to get everything working properly." ])
   //
   return MDUAllModFiles
 }
